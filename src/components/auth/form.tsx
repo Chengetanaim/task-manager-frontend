@@ -1,4 +1,7 @@
 import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -24,43 +27,68 @@ export const AuthForm = ({
   handleChange,
   handleSubmit,
 }: AuthFormProps) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      await login({ email, password });
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      setError("Invalid email or password");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="space-y-4">
       {!isLogin && (
+        <form>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Full Name
+            </label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              />
+            </div>
+          </div>
+        </form>
+      )}
+      <form onSubmit={handleSubmitForm}>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Full Name
+            Email Address
           </label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="John Doe"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              disabled={isLoading}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             />
           </div>
         </div>
-      )}
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Email Address
-        </label>
-        <div className="relative">
-          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="you@example.com"
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-          />
-        </div>
-      </div>
+      </form>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -69,11 +97,14 @@ export const AuthForm = ({
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
+            id="password"
             type={showPassword ? "text" : "password"}
             name="password"
             value={formData.password}
-            onChange={handleChange}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
+            required
+            disabled={isLoading}
             className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           />
           <button
@@ -81,6 +112,7 @@ export const AuthForm = ({
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
           >
+            {error && <p style={{ color: "red" }}>{error}</p>}
             {showPassword ? (
               <EyeOff className="w-5 h-5" />
             ) : (
