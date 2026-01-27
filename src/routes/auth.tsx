@@ -8,23 +8,6 @@ import { AuthForm } from "../components/auth/form";
 export const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-  };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
@@ -72,9 +55,6 @@ export const Auth = () => {
               isLogin,
               showPassword,
               setShowPassword,
-              formData,
-              handleChange,
-              handleSubmit,
             }}
           />
 
