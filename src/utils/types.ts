@@ -18,6 +18,6 @@ export interface AuthContextType {
 }
 
 export interface AuthResponse {
-    token: string;
+    accessToken: string
     user: User;
 }

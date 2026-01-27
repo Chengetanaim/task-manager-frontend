@@ -15,9 +15,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const login = async (credentials: LoginCredentials): Promise<void> => {
     const data = await authService.login(credentials);
-    setToken(data.token);
+    setToken(data.accessToken);
     setUser(data.user);
-    localStorage.setItem("taskManagertoken", data.token);
+    localStorage.setItem("taskManagertoken", data.accessToken);
   };
   const logout = (): void => {
     setToken(null);
@@ -27,6 +27,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const isAuthenticated = !!token;
+
   return (
     <AuthContext.Provider
       value={{ token, user, login, logout, isAuthenticated }}
