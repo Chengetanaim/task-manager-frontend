@@ -10,21 +10,22 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token"),
+    localStorage.getItem("taskManagertoken"),
   );
   const [user, setUser] = useState<User | null>(null);
   const login = async (credentials: LoginCredentials): Promise<void> => {
     const data = await authService.login(credentials);
     setToken(data.token);
     setUser(data.user);
-    localStorage.setItem("token", data.token);
+    localStorage.setItem("taskManagertoken", data.token);
   };
   const logout = (): void => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem("token");
+    localStorage.removeItem("taskManagertoken");
     authService.logout();
   };
+
   const isAuthenticated = !!token;
   return (
     <AuthContext.Provider
