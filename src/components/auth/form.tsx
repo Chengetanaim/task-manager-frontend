@@ -2,6 +2,8 @@ import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -41,9 +43,16 @@ export const AuthForm = ({
     const password = formData.password;
     try {
       await login({ email, password });
+      toast.success("Welcome back!");
       navigate("/");
     } catch (err: unknown) {
-      setError("Invalid email or password");
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          const message =
+            err.response?.data.detail || "Invalid email or password";
+          setError(message);
+        }
+      }
     } finally {
       setIsLoading(false);
     }
