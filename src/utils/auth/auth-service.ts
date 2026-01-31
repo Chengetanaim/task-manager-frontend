@@ -11,7 +11,7 @@ export const authService = {
         const response = await api.post('/login', formData, {headers: {"Content-Type": "application/x-www-form-urlencoded"}})
         
         const transformedData = camelcaseKeys(response.data)
-        console.log(transformedData)
+      
         return transformedData
     },
     logout: async(): Promise<void> => {
