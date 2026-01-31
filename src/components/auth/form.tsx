@@ -3,13 +3,6 @@ import { useState, type FormEvent } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
 interface AuthFormProps {
   isLogin: boolean;
   showPassword: boolean;
@@ -33,7 +26,7 @@ export const AuthForm = ({
     confirmPassword: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -44,7 +37,6 @@ export const AuthForm = ({
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    console.log("Form submitted:", formData);
     const email = formData.email;
     const password = formData.password;
     try {
@@ -57,20 +49,6 @@ export const AuthForm = ({
     }
   };
 
-  // const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setError("");
-  //   setIsLoading(true);
-
-  //   try {
-  //     await login({ email, password });
-  //     navigate("/dashboard");
-  //   } catch (err: unknown) {
-  //     setError("Invalid email or password");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   return (
     <div className="space-y-4">
       <form onSubmit={handleSubmit}>
@@ -133,7 +111,6 @@ export const AuthForm = ({
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
-              {error && <p style={{ color: "red" }}>{error}</p>}
               {showPassword ? (
                 <EyeOff className="w-5 h-5" />
               ) : (
@@ -141,6 +118,12 @@ export const AuthForm = ({
               )}
             </button>
           </div>
+
+          {error && (
+            <p style={{ color: "red" }} className="my-4">
+              {error}
+            </p>
+          )}
         </div>
 
         {!isLogin && (
@@ -161,31 +144,32 @@ export const AuthForm = ({
             </div>
           </div>
         )}
+        <div className="flex flex-col gap-y-6 mt-4">
+          {isLogin && (
+            <div className="flex items-center justify-between text-sm ">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                />
+                <span className="text-gray-600">Remember me</span>
+              </label>
+              <a
+                href="#"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Forgot password?
+              </a>
+            </div>
+          )}
 
-        {isLogin && (
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-              />
-              <span className="text-gray-600">Remember me</span>
-            </label>
-            <a
-              href="#"
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Forgot password?
-            </a>
-          </div>
-        )}
-
-        <button
-          onClick={() => console.log("woo")}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all"
-        >
-          {isLogin ? "Sign In" : "Create Account"}
-        </button>
+          <button
+            onClick={() => console.log("woo")}
+            className={`w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all ${!isLogin && "mt-6"}`}
+          >
+            {isLogin ? "Sign In" : "Create Account"}
+          </button>
+        </div>
       </form>
     </div>
   );
