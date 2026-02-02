@@ -1,7 +1,15 @@
-import { Check, Plus, Search } from "lucide-react";
+import { Check, LogOut, Plus, Search } from "lucide-react";
 import { Outlet } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 export const NavBar = () => {
+  const { logout } = useAuth();
   return (
     <div>
       <nav className="bg-white border-b border-gray-200 shadow-sm">
@@ -53,9 +61,19 @@ export const NavBar = () => {
                 <Plus className="w-4 h-4" />
                 New Task
               </button>
-              <button className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 font-medium hover:bg-gray-300 transition-colors">
-                U
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 font-medium hover:bg-gray-300 transition-colors">
+                    U
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
