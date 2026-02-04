@@ -1,5 +1,7 @@
 import axios from "axios";
+import camelcaseKeys from "camelcase-keys";
 import toast from "react-hot-toast";
+import snakecaseKeys from "snakecase-keys";
 
 export const api = axios.create({
     baseURL: "http://127.0.0.1:8000",
@@ -9,6 +11,14 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use(config => {
+    if (config.data && typeof config.data === "object") {
+        config.data = snakecaseKeys(config.data, { deep: true });
+    }
+
+    if (config.params) {
+        config.params = snakecaseKeys(config.params, { deep: true });
+    }
+
     const token = localStorage.getItem('taskManagertoken')
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
@@ -17,7 +27,13 @@ api.interceptors.request.use(config => {
 })
 
 api.interceptors.response.use(
-    response => response,
+    response => {
+        if (response.data && typeof response.data === "object") {
+            response.data = camelcaseKeys(response.data, { deep: true });
+        }
+
+        return response;
+    },
     error => {
         if (error.response){
             const status = error.response.status
