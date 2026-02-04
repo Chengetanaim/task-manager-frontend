@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useCreateUser } from "@/hooks/useUsers";
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -19,6 +20,7 @@ export const AuthForm = ({
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const { mutate } = useCreateUser();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -41,9 +43,18 @@ export const AuthForm = ({
     setIsLoading(true);
     const email = formData.email;
     const password = formData.password;
+    const firstName = formData.name;
+    const lastName = formData.name;
+
     try {
-      await login({ email, password });
-      toast.success("Welcome back!");
+      if (isLoading) {
+        await login({ email, password });
+        toast.success("Welcome back!");
+      } else {
+        mutate({ firstName, lastName, email, password });
+        toast.success("Account created!");
+      }
+
       navigate("/");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

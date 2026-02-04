@@ -4,6 +4,13 @@ export interface User {
     name: string;
 }
 
+export interface CreateUserInput {
+    email: string
+    firstName: string
+    lastName: string
+    password: string
+}
+
 export interface LoginCredentials {
     email: string;
     password: string;
