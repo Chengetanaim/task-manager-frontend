@@ -8,6 +8,9 @@ import { Auth } from "./routes/auth.tsx";
 import { ProtectedRoute } from "./components/auth/protected-route.tsx";
 import { AuthProvider } from "./routes/auth-provider.tsx";
 import { Toaster } from "react-hot-toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -32,32 +35,34 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: "#363636",
-            color: "#fff",
-          },
-          success: {
-            duration: 3000,
-            iconTheme: {
-              primary: "#4ade80",
-              secondary: "#fff",
-            },
-          },
-          error: {
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+        <Toaster
+          position="top-right"
+          toastOptions={{
             duration: 4000,
-            iconTheme: {
-              primary: "#ef4444",
-              secondary: "#fff",
+            style: {
+              background: "#363636",
+              color: "#fff",
             },
-          },
-        }}
-      />
-    </AuthProvider>
+            success: {
+              duration: 3000,
+              iconTheme: {
+                primary: "#4ade80",
+                secondary: "#fff",
+              },
+            },
+            error: {
+              duration: 4000,
+              iconTheme: {
+                primary: "#ef4444",
+                secondary: "#fff",
+              },
+            },
+          }}
+        />
+      </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>,
 );
